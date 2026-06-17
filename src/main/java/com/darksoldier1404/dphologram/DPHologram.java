@@ -14,6 +14,7 @@ import com.darksoldier1404.dphologram.render.HologramRenderer;
 import com.darksoldier1404.dphologram.render.PerPlayerTask;
 import com.darksoldier1404.dphologram.render.VisibilityTask;
 import com.darksoldier1404.dphologram.util.EntityTags;
+import com.darksoldier1404.dppc.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -36,6 +37,7 @@ public final class DPHologram extends DPlugin {
     @Override
     public void onLoad() {
         data = loadDataContainer(new DataContainer<>(this, DataType.CUSTOM, "holograms"), Hologram.class);
+        PluginUtil.addPlugin(plugin, 32047);
     }
 
     @Override

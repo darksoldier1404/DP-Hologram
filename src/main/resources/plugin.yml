@@ -1,0 +1,15 @@
+name: DP-Hologram
+version: 1.0-SNAPSHOT
+main: com.darksoldier1404.dphologram.DPHologram
+api-version: '1.20'
+author: DEAD_POOLIO_
+depend: [DPP-Core]
+softdepend: [PlaceholderAPI]
+commands:
+  hologram:
+    aliases: [holo]
+    description: Manage holograms
+    permission: dphologram.admin
+permissions:
+  dphologram.admin:
+    default: op

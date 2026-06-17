@@ -1,0 +1,14 @@
+Settings:
+  prefix: "&f[ &eDP-Hologram &f] "
+  Lang: ko_KR
+
+refresh-interval: 20
+default-line-spacing: 0.25
+visibility-check-interval: 40
+default-click-cooldown: 0
+
+# Per-player holograms: any hologram whose line text contains a %placeholder% is
+# rendered as a personal copy per nearby player, so placeholders resolve to each
+# player's own value. These two settings control that proximity tracking.
+per-player-view-distance: 64   # blocks; a player must be this close for their personal copy to spawn
+per-player-check-interval: 20  # ticks between spawn/despawn re-evaluation (20 = 1s)

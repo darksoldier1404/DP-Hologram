@@ -1,0 +1,100 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group 'com.darksoldier1404'
+
+// ##################################################
+
+version = '1.0.0'
+var pluginName = 'DP-Hologram'
+var packageName = 'com.darksoldier1404.dphologram'
+var apiVersion = '1.20.1'
+
+// ##################################################
+
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+configurations {
+    jar.archiveFileName = name + "-" + version + '-SNAPSHOT.jar'
+}
+jar {
+    destinationDirectory.set(file("$rootDir/jars"))
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = packageName
+            artifactId = pluginName
+            artifact 'jars/'+ pluginName + "-${version}-SNAPSHOT.jar"
+            version = "Main-SNAPSHOT"
+        }
+    }
+    repositories {
+        maven {
+            url System.getenv("REPO_DPP") ?: getProperty("REPO_DPP")
+            allowInsecureProtocol = true
+        }
+    }
+}
+build {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+task DS_BUILD {
+    doFirst {
+        def v = buildFile.getText().find(version)
+        def (major, minor, patch, build) = v.tokenize('.')
+        int newBuild = build.toInteger() + 1
+        String newVersion = major + "." + minor + "." + patch + "." + newBuild
+        String updatedVersion = buildFile.getText().replaceFirst("version = '" + v + "'", "version = '" + newVersion + "'")
+
+        allprojects.forEach(p -> {
+            p.buildFile.setText(p.buildFile.getText().replaceFirst("version = '" + v + "'", "version = '" + newVersion + "'"))
+            println "Project Module : " + p.name
+            p.sourceSets.main.resources.srcDirs().getFiles().forEach(o -> {
+                if (o.getName().equals("plugin.yml")) {
+                    List<String> lines = new ArrayList<String>()
+                    String line
+                    File f = o
+                    println "File : " + f.getAbsolutePath()
+                    FileReader fr = new FileReader(f)
+                    BufferedReader br = new BufferedReader(fr)
+                    while ((line = br.readLine()) != null) {
+                        if(line.contains("version") && !line.contains("api")) {
+                            line = "version: " + newVersion
+                        }
+                        lines.add(line + "\n")
+                    }
+                    fr.close()
+                    br.close()
+                    BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+                    lines.forEach(out::write)
+                    out.close()
+                }
+            })
+        })
+        buildFile.setText(updatedVersion)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url System.getenv("REPO_PUBLIC") ?: getProperty("REPO_PUBLIC")
+        allowInsecureProtocol = true
+    }
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:23.0.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    compileOnly "com.bukkit:craftbukkit:" + apiVersion
+    compileOnly "com.bukkit:spigot:" + apiVersion
+    compileOnly "com.darksoldier1404.dppc:DPP-Core:5.4-SNAPSHOT"
+}

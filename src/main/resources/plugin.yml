@@ -1,5 +1,5 @@
 name: DP-Hologram
-version: 1.0-SNAPSHOT
+version: 1.0.0
 main: com.darksoldier1404.dphologram.DPHologram
 api-version: '1.20'
 author: DEAD_POOLIO_
